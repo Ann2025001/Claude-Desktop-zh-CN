@@ -43,5 +43,6 @@
  ["^Expires (.{1,40}?)\\. It applies automatically to\\s*$","$1 到期。自动用于","expires",1100],
  ["^\\. Not eligible for Projects and Routines\\.$","。不适用于项目和例行程序。","eligible",1000],
  ["^(\\$[\\d.,]+) credits for cloud sessions available$","有 $1 云端会话额度可用","credits",1000],
- ["^Context ([\\d.,]+\\s?[kKM]?) / ([\\d.,]+\\s?[kKM]?) \\(([\\d.,]+%)\\)$","上下文 $1 / $2（$3）","context",1000]
+ ["^Context ([\\d.,]+\\s?[kKM]?) / ([\\d.,]+\\s?[kKM]?) \\(([\\d.,]+%)\\)$","上下文 $1 / $2（$3）","context",1000],
+ ["^Save ([\\d.,]+)% \\((.{1,20})\\)$","节省 $1%（$2）","save",1000]
 ]
