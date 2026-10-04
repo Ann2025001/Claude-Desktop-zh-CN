@@ -476,11 +476,13 @@ if (cmd === "status") {
   const rDef = 'const R=s=>{const n=N(s);if(M[n])return M[n];for(const [r,t] of G){const m=n.match(r);if(m)return t.replace("$1",m[1])}};';
   // 同时修正汉化包原有规则只替换 $1 的问题(否则日期显示成 "$2年9月25日")
   const rFixed = rDef.replace('return t.replace("$1",m[1])', 'return t.replace(/\\$(\\d)/g,(_,i)=>{const c=m[i]||"";return /\\s/.test(c)&&(M[c]||ML(c)||VP(c))||c})').replace(/\}\};$/, "}const v=VP(n);if(v===void 0)MS(n);return v};");
-  swap(rDef, "const V=__PATTERNS__;\n" + engine + "\n" + rFixed);
+  // 作者 1.4.10 之后已自行修正 $1 问题（写法与这里相同），新旧两种写法都接入匹配引擎
+  const rDefNew = rDef.replace('return t.replace("$1",m[1])', 'return t.replace(/\\$(\\d)/g,(_,i)=>m[i]||"")');
+  swap(ps.includes(rDef) ? rDef : rDefNew, "const V=__PATTERNS__;\n" + engine + "\n" + rFixed);
   // 保护范围补上代码页的对话正文（Claude 回复、文件预览正文、排队中的消息），这些区域的文字不经过翻译规则，也不会被漏翻收集
   swap(`[data-testid="conway-output-cell"]';`, `[data-testid="conway-output-cell"],.epitaxy-markdown,.epitaxy-file-prose,[data-testid="coach-queued-message"],[data-testid="user-message-edit"],[data-testid="thread-step-text"],[data-testid="result-list"],[data-testid="result-list-box"]';`);
   // 汉化包用的 [ordered]@{} 不区分大小写, "This computer" 会被 "this computer" 覆盖, 而页面匹配区分大小写, 导致数百条常用词失效
-  swap("    $mapping = [ordered]@{}", "    $mapping = New-Object System.Collections.Specialized.OrderedDictionary ([System.StringComparer]::Ordinal)");
+  if (ps.includes("    $mapping = [ordered]@{}")) swap("    $mapping = [ordered]@{}", "    $mapping = New-Object System.Collections.Specialized.OrderedDictionary ([System.StringComparer]::Ordinal)");   // 作者新版已修正则跳过
   const instLine = 'Write-Host "  installed resources/$Lang.json" -ForegroundColor Green';
   swap(instLine, instLine + "\r\n" +
     "    # 补全工具: 主程序语言会被在线页面同步回 en-US, 菜单/托盘随之读 en-US.json; 用中文版覆盖(原版由汉化包备份, 卸载时还原)\r\n" +
