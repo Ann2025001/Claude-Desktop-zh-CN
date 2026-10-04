@@ -263,7 +263,9 @@ function patterns(E, out) {
         if (j % 2 === 0) { src += esc(p); return; }
         if (parts[j - 1] === "" && j > 1) bad = true; // 两个变量紧挨着, 无法可靠切分
         names.push(p.replace(/[{}#]/g, ""));
-        src += isNum(p) ? "([$€£¥]?[\\d.,]+\\s?[kKMBT]?%?)" : "(.{1,80}?)";
+        // 变量名像数字（current/max/limit…）只在整句变量都是数字时才限定为数字；
+        // 句子里还有别的文字变量时，这类名字常装的是模型名等文字（如 "cached for {current}" 实际是 "Opus 4.8"），放宽为任意短文字
+        src += (p.startsWith("{#") || (allNum && isNum(p))) ? "([$€£¥]?[\\d.,]+\\s?[kKMBT]?%?)" : "(.{1,80}?)";
       });
       src += "$";
       // 展开后不含变量的分支（如 plural 的 one/other 各是一整句）：按整句精确匹配

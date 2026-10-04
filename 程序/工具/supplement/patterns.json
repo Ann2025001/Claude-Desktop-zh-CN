@@ -95,5 +95,10 @@
  ["^Created (\\d+\\s?(?:s|sec|secs|seconds?|m|min|mins|minutes?|h|hr|hrs|hours?|d|days?|w|weeks?|mo|months?|y|years?) ago|just now|yesterday|today)$","$1创建","created",1100],
  ["^Updated (\\d+\\s?(?:s|sec|secs|seconds?|m|min|mins|minutes?|h|hr|hrs|hours?|d|days?|w|weeks?|mo|months?|y|years?) ago|just now|yesterday|today)$","$1更新","updated",1100],
  ["^Viewed (\\d+\\s?(?:s|sec|secs|seconds?|m|min|mins|minutes?|h|hr|hrs|hours?|d|days?|w|weeks?|mo|months?|y|years?) ago|just now|yesterday|today)$","$1查看","viewed",1100],
- ["^Opened (\\d+\\s?(?:s|sec|secs|seconds?|m|min|mins|minutes?|h|hr|hrs|hours?|d|days?|w|weeks?|mo|months?|y|years?) ago|just now|yesterday|today)$","$1打开","opened",1100]
+ ["^Opened (\\d+\\s?(?:s|sec|secs|seconds?|m|min|mins|minutes?|h|hr|hrs|hours?|d|days?|w|weeks?|mo|months?|y|years?) ago|just now|yesterday|today)$","$1打开","opened",1100],
+ ["^Flagged again, switched to (.{1,40}?)$","再次被标记，已切换到 $1","flagged",1100],
+ ["^Flagged, switched to (.{1,40}?)$","已被标记，已切换到 $1","flagged",1100],
+ ["^Retrying in this session usually gets flagged again\\. A new session starts fresh\\.$","在此会话中重试通常会再次被标记。新会话会从头开始。","retrying",1100],
+ ["^Rewind and retry with (.{1,40}?)$","回退并用 $1 重试","rewind",1100],
+ ["^(.{1,40}?)['’]s safeguards flagged this session\\. You may be seeing this for the first time on an Opus model: (.{1,40}?) is more capable and has stronger safeguards as a result, which can sometimes flag non-cybersecurity work\\. We['’]re improving these safeguards to reduce the amount of incorrectly flagged messages\\.$","$1 的安全防护标记了这个会话。你可能是第一次在 Opus 模型上看到这个提示：$2 能力更强，相应的安全防护也更严格，有时会误标非网络安全类的工作。我们正在改进这些安全防护，以减少被误标的消息。","safeguards",1100]
 ]

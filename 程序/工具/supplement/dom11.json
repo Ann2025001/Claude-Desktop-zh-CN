@@ -254,5 +254,11 @@
  ["Presented file","已展示文件"],
  ["Session was archived","会话已归档"],
  ["Pop out chat","在新窗口打开聊天"],
- ["Share. Only you","共享。仅你可见"]
+ ["Share. Only you","共享。仅你可见"],
+ ["This part of the response was interrupted before it finished.","这部分回复在完成前被中断了。"],
+ ["Rewind and retry with Opus 5.5","回退并用 Opus 5.5 重试"],
+ ["Don't auto-switch models","不要自动切换模型"],
+ ["Don’t auto-switch models","不要自动切换模型"],
+ ["Why?","为什么？"],
+ ["Learn more","了解更多"]
 ]
