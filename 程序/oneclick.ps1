@@ -62,6 +62,8 @@ $hasSupplement = $asarText.Contains("/*__claudeZhSupplementMain*/")
 $oursFull = $hasAuthorDom -and -not $hasSupplement -and $asarText.Contains("readFileSync($runtimeLit")
 $notifyLit = (Join-Path $Opt "runtime\notify-zh-CN.json") | ConvertTo-Json -Compress
 $hasNotify = $asarText.Contains("/*__claudeZhNotify*/") -and $asarText.Contains("readFileSync($notifyLit")
+$missingLit = (Join-Path $Opt "runtime\missing-zh-CN.json") | ConvertTo-Json -Compress
+$hasNotify = $hasNotify -and $asarText.Contains("/*__claudeZhCollectStart*/") -and $asarText.Contains($missingLit)   # 主进程补丁（通知 + 漏翻收集）都在才算最新
 $zhInstalled = Test-Path -LiteralPath (Join-Path $res "ion-dist\i18n\zh-CN.json")
 $asarText = $null
 

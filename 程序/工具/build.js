@@ -466,7 +466,7 @@ if (cmd === "status") {
   const engine = fs.readFileSync(path.join(HERE, "pattern-engine.js"), "utf8").trim();
   const rDef = 'const R=s=>{const n=N(s);if(M[n])return M[n];for(const [r,t] of G){const m=n.match(r);if(m)return t.replace("$1",m[1])}};';
   // 同时修正汉化包原有规则只替换 $1 的问题(否则日期显示成 "$2年9月25日")
-  const rFixed = rDef.replace('return t.replace("$1",m[1])', 'return t.replace(/\\$(\\d)/g,(_,i)=>{const c=m[i]||"";return /\\s/.test(c)&&(M[c]||ML(c)||VP(c))||c})').replace(/\}\};$/, "}return VP(n)};");
+  const rFixed = rDef.replace('return t.replace("$1",m[1])', 'return t.replace(/\\$(\\d)/g,(_,i)=>{const c=m[i]||"";return /\\s/.test(c)&&(M[c]||ML(c)||VP(c))||c})').replace(/\}\};$/, "}const v=VP(n);if(v===void 0)MS(n);return v};");
   swap(rDef, "const V=__PATTERNS__;\n" + engine + "\n" + rFixed);
   // 汉化包用的 [ordered]@{} 不区分大小写, "This computer" 会被 "this computer" 覆盖, 而页面匹配区分大小写, 导致数百条常用词失效
   swap("    $mapping = [ordered]@{}", "    $mapping = New-Object System.Collections.Specialized.OrderedDictionary ([System.StringComparer]::Ordinal)");

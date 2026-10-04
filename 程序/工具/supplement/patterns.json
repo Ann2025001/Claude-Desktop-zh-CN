@@ -52,5 +52,20 @@
  ["^· Resets in (.{1,40})$","· $1后重置","resets",1000],
  ["^· Resets (.{1,40})$","· $1 重置","resets",999],
  ["^((?:Weekly|Daily|Monthly|5-hour|Session limit|Weekly limit)(?: · [^:]{1,30}?)?): ([\\d.,]+%) · Resets in (.{1,40})$","$1：$2 · $3后重置","resets",1100],
- ["^((?:Weekly|Daily|Monthly|5-hour|Session limit|Weekly limit)(?: · [^:]{1,30}?)?): ([\\d.,]+%) · Resets (.{1,40})$","$1：$2 · $3 重置","resets",1099]
+ ["^((?:Weekly|Daily|Monthly|5-hour|Session limit|Weekly limit)(?: · [^:]{1,30}?)?): ([\\d.,]+%) · Resets (.{1,40})$","$1：$2 · $3 重置","resets",1099],
+ ["^(?:Hello|Hi|Hey)(?: there)?, (.{1,40}?)[!.]?$","你好，$1","*",800],
+ ["^Hey there, (.{1,40}?)[!.]?$","嗨，$1","there",810],
+ ["^Welcome back, (.{1,40}?)[!.]?$","欢迎回来，$1","welcome",820],
+ ["^Welcome, (.{1,40}?)[!.]?$","欢迎，$1","welcome",815],
+ ["^Greetings, (.{1,40}?)[!.]?$","你好，$1","greetings",820],
+ ["^Back at it, (.{1,40}?)[!.]?$","又见面了，$1","back",820],
+ ["^Good to see you, (.{1,40}?)[!.]?$","很高兴见到你，$1","good",820],
+ ["^Happy (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday), (.{1,40}?)[!.]?$","$2，$1快乐","happy",820],
+ ["^Happy weekend, (.{1,40}?)[!.]?$","$1，周末愉快","happy",821],
+ ["^How was your day, (.{1,40}?)\\?$","$1，今天过得怎么样？","day",820],
+ ["^What['’]s new, (.{1,40}?)\\?$","$1，有什么新鲜事？","new",820],
+ ["^Up late, (.{1,40}?)\\?$","$1，这么晚还没睡？","late",820],
+ ["^(.{1,40}?) returns!$","$1 回来啦！","returns",820],
+ ["^Hi (.{1,40}?), how are you\\?$","你好 $1，最近怎么样？","how",830],
+ ["^Take (\\d+) minutes to share your experiences\\.$","花 $1 分钟分享你的使用体验。","minutes",1000]
 ]

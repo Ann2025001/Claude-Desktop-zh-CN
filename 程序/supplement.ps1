@@ -135,6 +135,31 @@ try {
     Write-Host "  将在作者的翻译代码之后加入补充代码（接收对象 $recv，读取 $RuntimeFile）"
     }
 
+    # 4b. 漏翻收集：翻译脚本把查不到译文的英文界面文字记在页面里，主进程每分钟取回一次，写到本机的 runtime\missing-zh-CN.json（只写本机，不联网）
+    Write-Host "[收集] 检查漏翻收集..." -ForegroundColor Cyan
+    $CollectStart = "/*__claudeZhCollectStart*/"; $CollectEnd = "/*__claudeZhCollectEnd*/"
+    $ci = $text.IndexOf($CollectStart, [System.StringComparison]::Ordinal)
+    if ($ci -ge 0) {
+        $ce = $text.IndexOf($CollectEnd, $ci, [System.StringComparison]::Ordinal)
+        if ($ce -lt 0) { throw "找到旧收集代码的开头但找不到结尾，为安全起见停止。" }
+        $text = $text.Substring(0, $ci) + $text.Substring($ce + $CollectEnd.Length)
+    }
+    $mi = $text.IndexOf($authorMarker, [System.StringComparison]::Ordinal)
+    $hooks2 = [regex]::Matches($text.Substring(0, $mi), '(?<recv>[A-Za-z_$][A-Za-z0-9_$]*)\.webContents\.on\((?<q>["''`])dom-ready\k<q>,')
+    $term2 = $text.Substring($mi - 1, 1)
+    if ($hooks2.Count -eq 0 -or ($term2 -ne ";" -and $term2 -ne ",")) {
+        Write-Host "  找不到合适的插入点，为安全起见跳过漏翻收集" -ForegroundColor DarkYellow
+    }
+    else {
+        $rv = $hooks2[$hooks2.Count - 1].Groups["recv"].Value
+        $missLit = (Join-Path (Split-Path -Parent $RuntimeFile) "missing-zh-CN.json") | ConvertTo-Json -Compress
+        $pull = '(()=>{const s=window.__claudeZhMissing;if(!s||!s.size)return null;const a=[...s];s.clear();return a})()' | ConvertTo-Json -Compress
+        $collect = $CollectStart + $rv + '.webContents.on("dom-ready",()=>{try{const w=' + $rv + '.webContents;clearInterval(globalThis.__claudeZhCollectTimer);globalThis.__claudeZhCollectTimer=setInterval(()=>{if(w.isDestroyed()){clearInterval(globalThis.__claudeZhCollectTimer);return}w.executeJavaScript(' + $pull + ').then(a=>{if(!a||!a.length)return;const fs=require("fs"),p=' + $missLit + ';let o={};try{o=JSON.parse(fs.readFileSync(p,"utf8"))}catch(e){}let n=Object.keys(o).length,c=0;const d=new Date().toISOString().slice(0,10);for(const s of a){if(typeof s=="string"&&s.length<=300&&!(s in o)&&n<5000){o[s]=d;n++;c++}}if(c)fs.writeFileSync(p,JSON.stringify(o,null,1))}).catch(()=>{})},60000)}catch(e){}})' + $term2 + $CollectEnd
+        $insertAt = $mi + $authorMarker.Length
+        $text = $text.Substring(0, $insertAt) + $collect + $text.Substring($insertAt)
+        Write-Host "  将加入漏翻收集（写入 $(Join-Path (Split-Path -Parent $RuntimeFile) 'missing-zh-CN.json')）"
+    }
+
     # 5. 系统通知：网页把通知正文交给主进程弹出，不经过页面翻译。在主进程弹通知处按外置的通知译文表换成中文（查不到用原文）
     Write-Host "[通知] 检查系统通知的正文..." -ForegroundColor Cyan
     $NotifyStart = "/*__claudeZhNotify*/"; $NotifyEnd = "/*__claudeZhNotifyEnd*/"
