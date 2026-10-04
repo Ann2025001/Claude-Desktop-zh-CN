@@ -5,6 +5,8 @@ param(
     [Parameter(Mandatory = $true)][string]$RuntimeFile, # 外置词典文件
     [switch]$CatalogsOnly,                              # 本优化版已注入网页翻译时：只更新词库和通知补丁
     [switch]$DryRun,                                    # 只检查，不写入
+    [switch]$SyncOnly,                                  # 只把 app.asar 的校验值同步进 Claude.exe（上次因 Claude 未退出而没同步时）
+    [switch]$CheckOnly,                                 # 只读检查校验值是否一致（一致退出码 0，不一致 2），不需要管理员权限
     [switch]$NoPause
 )
 $ErrorActionPreference = "Stop"
@@ -31,6 +33,48 @@ try {
     $res = Join-Path $loc "app\resources"
     $packRes = Join-Path $PackDir "resources"
     Write-Host "Claude 资源目录：$res"
+    $appDir = Join-Path $loc "app"
+    # Claude.exe 运行时无法写入校验值，所以改 app.asar 前必须等 Claude 完全退出（不替你强制关闭，避免打断正在进行的工作）
+    $script:waitedForExit = $false
+    function Wait-ClaudeExit {
+        if (@(Get-ClaudeDesktopProcesses).Count -eq 0) { return }
+        $script:waitedForExit = $true
+        Write-Host ""
+        Write-Host "Claude 正在运行。请完全退出 Claude（托盘图标右键 → 退出），检测到退出后会自动继续，完成后自动重新打开 Claude。" -ForegroundColor Yellow
+        while (@(Get-ClaudeDesktopProcesses).Count -gt 0) { Start-Sleep -Seconds 2 }
+        Start-Sleep -Seconds 2
+        Write-Host "  已检测到 Claude 退出，继续。" -ForegroundColor Green
+    }
+    function Open-ClaudeAgain {
+        if (-not $script:waitedForExit) { return }
+        $exe = Get-ClaudeExePath $appDir
+        if ($exe) { Start-Process -FilePath "explorer.exe" -ArgumentList "`"$exe`""; Write-Host "  已重新打开 Claude。" -ForegroundColor Green }
+        else { Write-Host "  请手动打开 Claude。" -ForegroundColor DarkYellow }
+    }
+
+    # 只读比较 app.asar 头部哈希和 Claude.exe 内记录的值（Claude 运行时也能读）
+    function Test-ExeIntegrity {
+        $exe = Get-ClaudeExePath $appDir
+        $fs = [System.IO.File]::Open($exe, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+        try { $buf = New-Object byte[] $fs.Length; [void]$fs.Read($buf, 0, $buf.Length) } finally { $fs.Dispose() }
+        $t = [System.Text.Encoding]::ASCII.GetString($buf)
+        $mk = 'resources\\app.asar","alg":"SHA256","value":"'
+        $i = $t.IndexOf($mk, [System.StringComparison]::Ordinal)
+        if ($i -lt 0) { return $true }   # 认不出格式时不判定为不一致，交给汉化包自己的同步函数处理
+        return ($t.Substring($i + $mk.Length, 64) -eq (Get-AsarHeaderHash (Join-Path $res "app.asar")))
+    }
+    if ($CheckOnly) {
+        if (Test-ExeIntegrity) { Write-Host "校验值一致"; exit 0 } else { Write-Host "校验值不一致"; exit 2 }
+    }
+
+    if ($SyncOnly) {
+        Write-Host "[校验] 把 app.asar 的校验值同步进 Claude.exe..." -ForegroundColor Cyan
+        Wait-ClaudeExit
+        Sync-ClaudeExeAsarIntegrity $res
+        Open-ClaudeAgain
+        Write-Host "完成。" -ForegroundColor Green
+        return
+    }
 
     # 2. 词库文件：作者译文优先、自己的补译填空（合并结果已由 build.js 生成在汉化包 resources 里）
     Write-Host "[词库] 更新中文词库文件..." -ForegroundColor Cyan
@@ -115,11 +159,21 @@ try {
         Write-Host "  （检查模式）补充后的主程序代码已写到 $tmp"
         return
     }
-    if ($text -ceq $origText) { Write-Host "  主程序补丁已是最新" -ForegroundColor Green }
+    if ($text -ceq $origText) {
+        Write-Host "  主程序补丁已是最新" -ForegroundColor Green
+        if (-not (Test-ExeIntegrity)) {
+            Write-Host "  app.asar 和 Claude.exe 的校验值不一致（上次写入时 Claude 未退出），现在同步..." -ForegroundColor Yellow
+            Wait-ClaudeExit
+            Sync-ClaudeExeAsarIntegrity $res
+            Open-ClaudeAgain
+        }
+    }
     else {
+        Wait-ClaudeExit
         $changed = Replace-AsarFileContent $res $target ([System.Text.Encoding]::UTF8.GetBytes($text))
         if ($changed) { Write-Host "  已写入主程序补丁，并同步了 Claude.exe 的校验值" -ForegroundColor Green }
         else { Write-Host "  主程序补丁已是最新" -ForegroundColor Green }
+        Open-ClaudeAgain
     }
     Write-Host ""
     Write-Host "完成。请完全退出 Claude（托盘图标右键 → 退出）再打开。" -ForegroundColor Green
@@ -127,7 +181,7 @@ try {
 catch {
     Write-Host ""
     Write-Host "[错误] $($_.Exception.Message)" -ForegroundColor Red
-    Write-Host "Claude 的文件没有被改坏：出错前的步骤都是完整写入的，可以重新运行一键汉化。" -ForegroundColor DarkYellow
+    Write-Host "可以重新运行一键汉化；如果提示 app.asar 和 Claude.exe 校验值不一致，在 Claude 完全退出后运行一次即可同步。" -ForegroundColor DarkYellow
     $global:LASTEXITCODE = 1
 }
 finally {

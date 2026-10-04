@@ -83,8 +83,11 @@ elseif ($oursFull) {
     if ($NoInstall) { Write-Host "（测试模式：跳过写入）"; return }
     $same = (Get-FileHash (Join-Path $Pack "resources\frontend-zh-CN.json")).Hash -eq (Get-FileHash (Join-Path $res "ion-dist\i18n\zh-CN.json")).Hash -and
             (Get-FileHash (Join-Path $Pack "resources\desktop-zh-CN.json")).Hash -eq (Get-FileHash (Join-Path $res "zh-CN.json")).Hash
-    if (-not $same -or -not $hasNotify) {
-        Write-Host "词库文件或系统通知补丁需要更新，需要管理员授权写入..." -ForegroundColor Cyan
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Prog "supplement.ps1") -PackDir $Pack -RuntimeFile $RuntimeFile -CheckOnly -NoPause | Out-Null
+    $integrityOk = ($LASTEXITCODE -ne 2)
+    if (-not $integrityOk) { Write-Host "发现 app.asar 和 Claude.exe 的校验值不一致（上次写入时 Claude 未退出），将一并修复。" -ForegroundColor Yellow }
+    if (-not $same -or -not $hasNotify -or -not $integrityOk) {
+        Write-Host "词库文件、系统通知补丁或校验值需要更新，需要管理员授权写入..." -ForegroundColor Cyan
         [void](Start-Elevated (Join-Path $Prog "supplement.ps1") @('-PackDir', "`"$Pack`"", '-RuntimeFile', "`"$RuntimeFile`"", '-CatalogsOnly'))
     }
     Write-Host "完成。请完全退出 Claude（托盘图标右键 → 退出）再打开。" -ForegroundColor Green
