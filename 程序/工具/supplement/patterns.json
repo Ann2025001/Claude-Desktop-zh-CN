@@ -100,5 +100,7 @@
  ["^Flagged, switched to (.{1,40}?)$","已被标记，已切换到 $1","flagged",1100],
  ["^Retrying in this session usually gets flagged again\\. A new session starts fresh\\.$","在此会话中重试通常会再次被标记。新会话会从头开始。","retrying",1100],
  ["^Rewind and retry with (.{1,40}?)$","回退并用 $1 重试","rewind",1100],
- ["^(.{1,40}?)['’]s safeguards flagged this session\\. You may be seeing this for the first time on an Opus model: (.{1,40}?) is more capable and has stronger safeguards as a result, which can sometimes flag non-cybersecurity work\\. We['’]re improving these safeguards to reduce the amount of incorrectly flagged messages\\.$","$1 的安全防护标记了这个会话。你可能是第一次在 Opus 模型上看到这个提示：$2 能力更强，相应的安全防护也更严格，有时会误标非网络安全类的工作。我们正在改进这些安全防护，以减少被误标的消息。","safeguards",1100]
+ ["^(.{1,40}?)['’]s safeguards flagged this session\\. You may be seeing this for the first time on an Opus model: (.{1,40}?) is more capable and has stronger safeguards as a result, which can sometimes flag non-cybersecurity work\\. We['’]re improving these safeguards to reduce the amount of incorrectly flagged messages\\.$","$1 的安全防护标记了这个会话。你可能是第一次在 Opus 模型上看到这个提示：$2 能力更强，相应的安全防护也更严格，有时会误标非网络安全类的工作。我们正在改进这些安全防护，以减少被误标的消息。","safeguards",1100],
+ ["^at (\\d{1,2}(?::\\d{2})?)\\s*重置$","$1 重置","*",1000],
+ ["^(\\d{1,2}:\\d{2})\\s*重置$","$1 重置","*",999]
 ]
