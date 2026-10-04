@@ -91,6 +91,7 @@ const TERMS = [
   [/\bSkills?\b/g, "技能"],
   [/\bHooks?\b/g, "钩子"],
   [/挂钩/g, "钩子"],
+  [/^平日$/g, "工作日"], // 日程选项 Weekdays：周一到周五
 ];
 const CJK = /[　-〿一-鿿＀-￯“”‘’]/;
 function normalize(s) {

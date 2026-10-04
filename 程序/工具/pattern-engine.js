@@ -12,7 +12,10 @@ const VP=n=>{if(n&&n.includes("$2年"))return n.replace(/\$2年/g,"");if(n&&/[�
 if(best===void 0&&/\s/.test(n)&&n.length<=80)best=ML(n);
 if(best===void 0&&/, | · /.test(n)){const lead=/^(?:,|·) /.test(n)?(n[0]===","?"，":" · "):"",body=lead?n.slice(2):n,sep=body.includes(" · ")||lead===" · "?" · ":"，",ps=body.split(/ · |, (?:and )?/),cap=s=>s.charAt(0).toUpperCase()+s.slice(1),tr=[];for(const p of ps){const c=cap(p.trim()),t=M[p]||M[c]||(p!==n&&c!==n?VP(c):void 0);if(!t){tr.length=0;break}tr.push(t)}if(tr.length===ps.length&&(tr.length>1||lead&&tr.length))best=lead+tr.join(sep)}
 if(VC.size>5000)VC.clear();VC.set(n,best);return best};
-const SW=[[/^(Pay|支付)$/,/^(now|现在)$/,"立即支付 "]];const SF=()=>{try{document.querySelectorAll("b").forEach(b=>{const p=b.previousSibling,q=b.nextSibling;if(!p||!q||p.nodeType!==3||q.nodeType!==3)return;const a=p.nodeValue.trim(),c=q.nodeValue.trim();for(const [x,y,t] of SW)if(x.test(a)&&y.test(c)){p.nodeValue=t;q.nodeValue=""}});ZPF();ZSR();ZRT()}catch{}};
+const SW=[[/^(Pay|支付)$/,/^(now|现在)$/,"立即支付 "]];const SF=()=>{try{document.querySelectorAll("b").forEach(b=>{const p=b.previousSibling,q=b.nextSibling;if(!p||!q||p.nodeType!==3||q.nodeType!==3)return;const a=p.nodeValue.trim(),c=q.nodeValue.trim();for(const [x,y,t] of SW)if(x.test(a)&&y.test(c)){p.nodeValue=t;q.nodeValue=""}});ZPF();ZSR();ZRT();ZSEG()}catch{}};
+// 分段按钮（如自动化任务日程 One-time/Manual/Hourly…）紧挨着排列，父元素文字拼成 "One-timeManual…" 像斜杠命令名，被作者的命令保护跳过。
+// 只处理带 aria-pressed 的按钮：按钮里只有一段文字、首字母大写、词典里有整句译文才替换；受保护区域不处理
+const ZSEG=()=>{document.querySelectorAll("button[aria-pressed]").forEach(b=>{if(b.childNodes.length!==1||b.firstChild.nodeType!==3||b.closest("[contenteditable],"+C)||Q(b))return;const v=b.firstChild.nodeValue.trim();if(!/^[A-Z][A-Za-z -]{1,30}$/.test(v))return;const t=M[v];if(typeof t==="string"&&t!==v)b.firstChild.nodeValue=t})};
 // 用量/额度小横幅里的"重置时间"常被拆成几段（"at" 一段、"Resets/重置" 一段、时间一段），逐段翻译后拼成 "at 重置14:00" 这类。
 // 只要一个元素里同时含"重置或 Resets"和时间、没有链接/按钮、整段能翻译，就把所有文字合到第一段、其余清空，不动结构。
 const ZRTt=/(\d{1,2}:\d{2}|\d{1,2}\s?[AP]M|\d{1,2}\s?点)/,ZRTk=/重置|Resets|Expires|到期|limit|限额/i;
