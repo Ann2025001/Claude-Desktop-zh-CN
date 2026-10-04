@@ -27,7 +27,8 @@
  ["^((?:January|February|March|April|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\\.? \\d{1,2})$","$1","*",900],
  ["^(\\d{1,2}(?::\\d{2})?\\s?[AP]M) South Korea Time$","韩国时间 $1","korea",1000],
  ["^([\\d,]+) conversations?$","$1 个对话","*",1000],
- ["^Viewed (.{1,40})$","$1查看过","viewed",1000], ["^at (?:重置|Resets)\\s*(.+)$","$1 重置","*",1000],
+ ["^Viewed (.{1,40})$","$1查看过","viewed",1000],
+ ["^at (?:重置|Resets)\\s*(.+)$","$1 重置","*",1000],
  ["^at (\\d{1,2}(?::\\d{2})?\\s?[AP]M)$","$1","*",1000],
  ["^(.{1,40}?) runs on usage credits, billed separately from your plan\\.?$","$1 使用用量额度运行，与你的套餐分开计费。","credits",1000],
  ["^(.{1,40}?) runs on usage credits\\.?$","$1 使用用量额度运行","credits",999],
@@ -37,5 +38,6 @@
  ["^Context ([\\d.,]+\\s?[kKM%]?)$","上下文 $1","context",1000],
  ["^Context ([\\d.,]+\\s?[kKM]?) / ([\\d.,]+\\s?[kKM]?)$","上下文 $1 / $2","context",1000],
  ["^(.{1,40}?)['’]s safeguards flagged this message\\. Our intentionally broad safeguards allow us to deliver more capabilities faster, but can sometimes flag legitimate cybersecurity work\\. Apply to the Cyber Verification Program to reduce these interruptions\\.$","$1 的安全防护标记了这条消息。我们有意采用较宽泛的安全防护，以便更快地推出更多能力，但有时也会误标正当的网络安全工作。申请加入网络安全验证计划可减少此类中断。","safeguards",1000],
- ["^(.{1,40}?)['’]s safeguards flagged this message\\. Our intentionally broad safeguards allow us to deliver more capabilities faster, but can sometimes flag legitimate cybersecurity work\\.$","$1 的安全防护标记了这条消息。我们有意采用较宽泛的安全防护，以便更快地推出更多能力，但有时也会误标正当的网络安全工作。","safeguards",999]
+ ["^(.{1,40}?)['’]s safeguards flagged this message\\. Our intentionally broad safeguards allow us to deliver more capabilities faster, but can sometimes flag legitimate cybersecurity work\\.$","$1 的安全防护标记了这条消息。我们有意采用较宽泛的安全防护，以便更快地推出更多能力，但有时也会误标正当的网络安全工作。","safeguards",999],
+ ["^No folder, (.+)$","无文件夹，$1","folder",1000]
 ]
