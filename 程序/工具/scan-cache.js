@@ -12,7 +12,7 @@ function body(buf) {
   return { key, data: buf.slice(start, end < 0 ? buf.length : end) };
 }
 function decode(d) {
-  for (const f of [(x) => zlib.brotliDecompressSync(x), (x) => zlib.gunzipSync(x), (x) => zlib.inflateSync(x), (x) => x]) {
+  for (const f of [(x) => zlib.zstdDecompressSync(x), (x) => zlib.brotliDecompressSync(x), (x) => zlib.gunzipSync(x), (x) => zlib.inflateSync(x), (x) => x]) {
     try { const t = f(d).toString("utf8"); if (/defaultMessage|formatMessage|children:/.test(t)) return t; } catch {}
   }
   return null;

@@ -252,7 +252,11 @@ function patterns(E, out) {
       const isNum = (p) => p.startsWith("{#") || NUMVAR.test(p.replace(/[{}#]/g, ""));
       const vars = parts.filter((_, j) => j % 2 === 1);
       const allNum = vars.length > 0 && vars.every(isNum);
-      if (allNum ? letters < 2 : letters < 10 || words.length < 2) continue;
+      if (allNum ? letters < 2 : letters < 3 || !words.some((w) => w.length >= 3)) continue;
+      // 固定文字很短、或变量在句首句尾的短句，容易套到用户自己写的标题上：生成为"宽松规则"，
+      // 页面使用时要求变量部分像名字/数字/产品名或本身能翻译，否则放弃这条规则（见 pattern-engine 的 LC）
+      const edgeVar = (parts[0] === "" && !isNum(parts[1])) || (parts[parts.length - 1] === "" && !isNum(parts[parts.length - 2]));
+      const loose = !allNum && (letters < 10 || words.length < 2 || (edgeVar && letters < 25));
       const names = [];
       let src = "^", bad = false;
       parts.forEach((p, j) => {
@@ -262,16 +266,20 @@ function patterns(E, out) {
         src += isNum(p) ? "([$€£¥]?[\\d.,]+\\s?[kKMBT]?%?)" : "(.{1,80}?)";
       });
       src += "$";
-      if (bad || names.length > 9 || names.length === 0) continue;
+      // 展开后不含变量的分支（如 plural 的 one/other 各是一整句）：按整句精确匹配
+      if (names.length === 0) {
+        const k0 = words.filter((w) => /^[a-z]{3,}$/.test(w)).sort((a, b) => b.length - a.length)[0];
+        if (k0 && te !== tz && !/[{}]/.test(tz) && !rules.has(src)) rules.set(src, [src, tz, k0, 1000 + letters]);
+        continue;
+      }
+      if (bad || names.length > 9) continue;
       // 句首/句尾是任意文字的变量时, 很容易吃掉用户自己的标题(如 "xxx with Claude"), 要求固定文字足够长
-      const edge = (parts[0] === "" && !isNum(parts[1])) || (parts[parts.length - 1] === "" && !isNum(parts[parts.length - 2]));
-      if (edge && letters < 25) continue;
       let ok = true;
       const target = tz.replace(/\{#?(\w+)\}/g, (_, n) => { const x = names.indexOf(n); if (x < 0) ok = false; return "$" + (x + 1); });
       if (!ok || /[{}]/.test(target)) continue;
       const key = words.filter((w) => /^[a-z]{3,}$/.test(w)).sort((a, b) => b.length - a.length)[0];
       if (!key || rules.has(src)) continue;
-      rules.set(src, [src, target, key, letters]);
+      rules.set(src, loose ? [src, target, key, letters, "", 1] : [src, target, key, letters]);
     }
   }
   // 句中带链接/加粗的文字在页面上被切成几段(如 "Read our" + "security guide" + "for details."), 整句对不上.
