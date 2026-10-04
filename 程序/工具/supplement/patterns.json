@@ -67,5 +67,17 @@
  ["^Up late, (.{1,40}?)\\?$","$1，这么晚还没睡？","late",820],
  ["^(.{1,40}?) returns!$","$1 回来啦！","returns",820],
  ["^Hi (.{1,40}?), how are you\\?$","你好 $1，最近怎么样？","how",830],
- ["^Take (\\d+) minutes to share your experiences\\.$","花 $1 分钟分享你的使用体验。","minutes",1000]
+ ["^Take (\\d+) minutes to share your experiences\\.$","花 $1 分钟分享你的使用体验。","minutes",1000],
+ ["^Finished (\\d+) background tasks?$","完成了 $1 个后台任务","background",1000],
+ ["^Finished a background task$","完成了 1 个后台任务","background",1000],
+ ["^(.{3,80}?) \\((\\d+) failed\\)$","$1（$2 个失败）","failed",900],
+ ["^(.{3,80}?) \\+(\\d+)$","$1 +$2","*",600],
+ ["^Usage, ((?:Weekly|Daily|Monthly|5-hour|Session limit|Weekly limit)(?: · [^:]{1,30}?)?): ([\\d.,]+%), Resets in (.{1,40})$","用量，$1：$2，$3后重置","usage",1100],
+ ["^Usage, ((?:Weekly|Daily|Monthly|5-hour|Session limit|Weekly limit)(?: · [^:]{1,30}?)?): ([\\d.,]+%), Resets (.{1,40})$","用量，$1：$2，$3 重置","usage",1099],
+ ["^Learn more about (.{1,40}?) \\(opens in new tab\\)$","了解有关 $1 的更多信息（在新标签页中打开）","learn",1000],
+ ["^(Opus|Sonnet|Haiku|Fable|Mythos)((?: [\\d.]+)?) Low$","$1$2 低","low",1000],
+ ["^(Opus|Sonnet|Haiku|Fable|Mythos)((?: [\\d.]+)?) Medium$","$1$2 中","medium",1000],
+ ["^(Opus|Sonnet|Haiku|Fable|Mythos)((?: [\\d.]+)?) High$","$1$2 高","high",1000],
+ ["^(Opus|Sonnet|Haiku|Fable|Mythos)((?: [\\d.]+)?) Extra[ -]high$","$1$2 超高","extra",1000],
+ ["^(Opus|Sonnet|Haiku|Fable|Mythos)((?: [\\d.]+)?) Max$","$1$2 最大","max",1000]
 ]

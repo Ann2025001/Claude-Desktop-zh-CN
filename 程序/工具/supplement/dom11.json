@@ -247,5 +247,7 @@
  ["How are things?","最近怎么样？"],
  ["Try auto mode","试试自动模式"],
  ["Try Auto mode","试试自动模式"],
- ["Claude checks each tool call and runs ones that pass its safety checks. Choose Auto from this menu anytime.","Claude 会检查每次工具调用，只执行通过安全检查的操作。你随时可以在这个菜单里选择“自动”。"]
+ ["Claude checks each tool call and runs ones that pass its safety checks. Choose Auto from this menu anytime.","Claude 会检查每次工具调用，只执行通过安全检查的操作。你随时可以在这个菜单里选择“自动”。"],
+ ["New from a template","从模板新建"],
+ ["Terminal input","终端输入"]
 ]

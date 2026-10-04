@@ -476,6 +476,8 @@ if (cmd === "status") {
   // 同时修正汉化包原有规则只替换 $1 的问题(否则日期显示成 "$2年9月25日")
   const rFixed = rDef.replace('return t.replace("$1",m[1])', 'return t.replace(/\\$(\\d)/g,(_,i)=>{const c=m[i]||"";return /\\s/.test(c)&&(M[c]||ML(c)||VP(c))||c})').replace(/\}\};$/, "}const v=VP(n);if(v===void 0)MS(n);return v};");
   swap(rDef, "const V=__PATTERNS__;\n" + engine + "\n" + rFixed);
+  // 保护范围补上代码页的对话正文（Claude 回复、文件预览正文、排队中的消息），这些区域的文字不经过翻译规则，也不会被漏翻收集
+  swap(`[data-testid="conway-output-cell"]';`, `[data-testid="conway-output-cell"],[data-testid="assistant-message"],.epitaxy-markdown,.epitaxy-file-prose,[data-testid="coach-queued-message"],[data-testid="user-message-edit"]';`);
   // 汉化包用的 [ordered]@{} 不区分大小写, "This computer" 会被 "this computer" 覆盖, 而页面匹配区分大小写, 导致数百条常用词失效
   swap("    $mapping = [ordered]@{}", "    $mapping = New-Object System.Collections.Specialized.OrderedDictionary ([System.StringComparer]::Ordinal)");
   const instLine = 'Write-Host "  installed resources/$Lang.json" -ForegroundColor Green';
