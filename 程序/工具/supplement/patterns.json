@@ -83,5 +83,17 @@
  ["^Download and open (.{1,80})$","下载并打开 $1","download",1000],
  ["^Open folder (.{1,80})$","打开文件夹 $1","folder",1000],
  ["^Select folder (.{1,80})$","选择文件夹 $1","folder",1000],
- ["^(.{1,60}), folder$","$1，文件夹","folder",1000]
+ ["^(.{1,60}), folder$","$1，文件夹","folder",1000],
+ ["^Created ([\\w./\\\\@-]+\\.[A-Za-z0-9]{1,8})$","创建了 $1","created",1200],
+ ["^Edited ([\\w./\\\\@-]+\\.[A-Za-z0-9]{1,8})$","编辑了 $1","edited",1200],
+ ["^Wrote ([\\w./\\\\@-]+\\.[A-Za-z0-9]{1,8})$","写入了 $1","wrote",1200],
+ ["^Updated ([\\w./\\\\@-]+\\.[A-Za-z0-9]{1,8})$","更新了 $1","updated",1200],
+ ["^Deleted ([\\w./\\\\@-]+\\.[A-Za-z0-9]{1,8})$","删除了 $1","deleted",1200],
+ ["^Viewed ([\\w./\\\\@-]+\\.[A-Za-z0-9]{1,8})$","查看了 $1","viewed",1200],
+ ["^Read ([\\w./\\\\@-]+\\.[A-Za-z0-9]{1,8})$","读取了 $1","read",1200],
+ ["^Edited (\\d+\\s?(?:s|sec|secs|seconds?|m|min|mins|minutes?|h|hr|hrs|hours?|d|days?|w|weeks?|mo|months?|y|years?) ago|just now|yesterday|today)$","$1编辑","edited",1100],
+ ["^Created (\\d+\\s?(?:s|sec|secs|seconds?|m|min|mins|minutes?|h|hr|hrs|hours?|d|days?|w|weeks?|mo|months?|y|years?) ago|just now|yesterday|today)$","$1创建","created",1100],
+ ["^Updated (\\d+\\s?(?:s|sec|secs|seconds?|m|min|mins|minutes?|h|hr|hrs|hours?|d|days?|w|weeks?|mo|months?|y|years?) ago|just now|yesterday|today)$","$1更新","updated",1100],
+ ["^Viewed (\\d+\\s?(?:s|sec|secs|seconds?|m|min|mins|minutes?|h|hr|hrs|hours?|d|days?|w|weeks?|mo|months?|y|years?) ago|just now|yesterday|today)$","$1查看","viewed",1100],
+ ["^Opened (\\d+\\s?(?:s|sec|secs|seconds?|m|min|mins|minutes?|h|hr|hrs|hours?|d|days?|w|weeks?|mo|months?|y|years?) ago|just now|yesterday|today)$","$1打开","opened",1100]
 ]
