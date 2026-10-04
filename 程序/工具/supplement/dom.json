@@ -1,0 +1,23 @@
+[
+ ["Cowork local devices", "协作本地设备"],
+ ["Computers that can run Cowork tasks with access to local files, computer use, browser use, and local MCPs.", "可以运行协作任务的计算机，可访问本地文件、计算机操作、浏览器操作和本地 MCP。"],
+ ["Verify each new device before it can connect to Claude on your computer remotely — applies to Claude Code Remote Control and Cowork.", "每台新设备远程连接你计算机上的 Claude 之前都需要先验证——适用于 Claude Code 远程控制和协作。"],
+ ["When you trust a folder on this device, you allow Claude to use it and the folders inside it. Trusting a folder doesn’t add it to new tasks. When you add one to a task, you may be asked to allow it again.", "信任此设备上的某个文件夹，即允许 Claude 使用该文件夹及其中的子文件夹。信任文件夹不会把它添加到新任务；把它添加到任务时，可能会再次请你允许。"],
+ ["Stops when the app closes or this computer sleeps.", "应用关闭或这台计算机睡眠时停止。"],
+ ["Learn more about how Claude reads your files", "进一步了解 Claude 如何读取你的文件"],
+ ["Claude Academy", "Claude 学院"],
+ ["last wk.", "上周"],
+ ["last mo.", "上个月"],
+ ["last yr.", "去年"],
+ ["next wk.", "下周"],
+ ["next mo.", "下个月"],
+ ["last week", "上周"],
+ ["last month", "上个月"],
+ ["last year", "去年"],
+ ["yesterday", "昨天"],
+ ["Yesterday", "昨天"],
+ ["Today", "今天"],
+ ["Tomorrow", "明天"],
+ ["just now", "刚刚"],
+ ["Just now", "刚刚"]
+]

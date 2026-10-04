@@ -1,0 +1,23 @@
+[
+ ["Complex, detailed work", "复杂、细致的工作"],
+ ["Always uses deep reasoning", "始终进行深度推理"],
+ ["Most efficient for simpler tasks", "处理较简单的任务最高效"],
+ ["Light, casual tasks", "轻量、日常的任务"],
+ ["May use excessive tokens resulting in long response times and may hit token limits. Use sparingly for the hardest tasks.", "可能消耗大量令牌，导致响应时间较长，并可能触及令牌上限。请仅在最困难的任务上谨慎使用。"],
+ ["For complex work and everyday tasks", "适合复杂工作和日常任务"],
+ ["For your toughest challenges", "应对你最棘手的挑战"],
+ ["Balanced for everyday work", "日常工作的平衡之选"],
+ ["Uses usage credits", "使用用量额度"],
+ ["Higher effort means more thorough responses, but takes longer and uses your limits faster.", "推理强度越高，回复越周全，但耗时更长，限额消耗也更快。"],
+ ["Can think for more complex tasks", "可针对更复杂的任务进行思考"],
+ ["Org default", "组织默认"],
+ ["The hardest problems. Takes longest.", "最难的问题。耗时最长。"],
+ ["Quick replies to simple questions", "快速回答简单问题"],
+ ["Enable fast mode", "开启快速模式"],
+ ["Fast mode", "快速模式"],
+ ["Claude Code notice", "Claude Code 提示"],
+ ["Browsed the web", "浏览了网页"],
+ ["Anthropic Directory", "Anthropic 目录"],
+ ["Details:", "详情："],
+ ["Apply to the Cyber Verification Program to reduce these interruptions.", "申请加入网络安全验证计划可减少此类中断。"]
+]

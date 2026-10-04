@@ -1,0 +1,13 @@
+# 本机生成的文件
+runtime/
+程序/已装译文/
+*.log
+
+# 维护工具的本机缓存和中间文件
+程序/工具/backups/
+程序/工具/baseline/
+程序/工具/out/
+程序/工具/pack-original/
+程序/工具/todo/
+程序/工具/upstream/
+程序/工具/slash-commands-en.json

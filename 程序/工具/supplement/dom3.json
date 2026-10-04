@@ -1,0 +1,21 @@
+[
+ ["Most active day", "最活跃的一天"],
+ ["Total conversations", "对话总数"],
+ ["Your time with Claude", "你与 Claude 共度的时间"],
+ ["What your conversations were about", "你的对话主题"],
+ ["Expanding your skills", "拓展你的技能"],
+ ["Delegation", "委派"],
+ ["Discernment", "辨别"],
+ ["Diligence", "审慎"],
+ ["Fluency", "熟练度"],
+ ["Create a focused project", "创建一个专注项目"],
+ ["Time spent", "使用时长"],
+ ["Claude uses memory to build your reflection. Turn this off anytime in", "Claude 会使用记忆生成你的回顾。你可以随时在以下位置关闭："],
+ ["memory settings", "记忆设置"],
+ ["No trusted devices.", "没有受信任的设备。"],
+ ["Emails from Claude Code cloud sessions", "Claude Code 云端会话邮件"],
+ ["Get an email when a cloud session has finished building or needs your response.", "云端会话构建完成或需要你回复时，给你发送邮件。"],
+ ["Read our", "请阅读我们的"],
+ ["security guide", "安全指南"],
+ ["for details.", "了解详情。"]
+]

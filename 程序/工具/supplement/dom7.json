@@ -1,0 +1,9 @@
+[
+ ["Edited a file", "编辑了一个文件"],
+ ["Created a file", "创建了一个文件"],
+ ["Wrote a file", "写入了一个文件"],
+ ["Ran a command", "运行了一个命令"],
+ ["Fetched a page", "获取了一个页面"],
+ ["Searched files", "搜索了文件"],
+ ["Read files", "读取了文件"]
+]

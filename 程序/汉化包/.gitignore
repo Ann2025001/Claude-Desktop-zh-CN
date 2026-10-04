@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+.venv-*/
+venv/
+*.log
+.codegraph/
+.omc/
+.reasonix/
+runtime/
+scripts/experimental/runtime/
+*.embed-*.zip
+
+# Linux 汉化脚本运行时生成的本地备份，不应提交
+resources/.zh-cn-backups-linux/

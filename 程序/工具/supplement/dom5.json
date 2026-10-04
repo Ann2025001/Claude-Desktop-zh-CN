@@ -1,0 +1,15 @@
+[
+ ["Concise", "简洁"],
+ ["Explanatory", "讲解"],
+ ["Extra", "超高"],
+ ["Regenerate reflection", "重新生成回顾"],
+ ["Sort by Last edited", "按最近编辑排序"],
+ ["Sort by Last used", "按最近使用排序"],
+ ["Sort by Name", "按名称排序"],
+ ["Sort by Date added", "按添加日期排序"],
+ ["Sort by Most used", "按使用次数排序"],
+ ["Sort by Recently added", "按最近添加排序"],
+ ["Peak hour", "高峰时段"],
+ ["Conversations", "对话"],
+ ["Time spent", "使用时长"]
+]
