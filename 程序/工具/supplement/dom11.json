@@ -249,5 +249,10 @@
  ["Try Auto mode","试试自动模式"],
  ["Claude checks each tool call and runs ones that pass its safety checks. Choose Auto from this menu anytime.","Claude 会检查每次工具调用，只执行通过安全检查的操作。你随时可以在这个菜单里选择“自动”。"],
  ["New from a template","从模板新建"],
- ["Terminal input","终端输入"]
+ ["Terminal input","终端输入"],
+ ["Add a folder on this computer for Claude to work in.","在这台电脑上添加一个文件夹，让 Claude 在里面工作。"],
+ ["Presented file","已展示文件"],
+ ["Session was archived","会话已归档"],
+ ["Pop out chat","在新窗口打开聊天"],
+ ["Share. Only you","共享。仅你可见"]
 ]

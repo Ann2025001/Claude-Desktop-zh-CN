@@ -79,5 +79,9 @@
  ["^(Opus|Sonnet|Haiku|Fable|Mythos)((?: [\\d.]+)?) Medium$","$1$2 中","medium",1000],
  ["^(Opus|Sonnet|Haiku|Fable|Mythos)((?: [\\d.]+)?) High$","$1$2 高","high",1000],
  ["^(Opus|Sonnet|Haiku|Fable|Mythos)((?: [\\d.]+)?) Extra[ -]high$","$1$2 超高","extra",1000],
- ["^(Opus|Sonnet|Haiku|Fable|Mythos)((?: [\\d.]+)?) Max$","$1$2 最大","max",1000]
+ ["^(Opus|Sonnet|Haiku|Fable|Mythos)((?: [\\d.]+)?) Max$","$1$2 最大","max",1000],
+ ["^Download and open (.{1,80})$","下载并打开 $1","download",1000],
+ ["^Open folder (.{1,80})$","打开文件夹 $1","folder",1000],
+ ["^Select folder (.{1,80})$","选择文件夹 $1","folder",1000],
+ ["^(.{1,60}), folder$","$1，文件夹","folder",1000]
 ]
