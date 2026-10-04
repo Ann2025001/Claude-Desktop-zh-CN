@@ -11,3 +11,6 @@ runtime/
 程序/工具/todo/
 程序/工具/upstream/
 程序/工具/slash-commands-en.json
+程序/工具/scan-left.txt
+程序/工具/scan-cache-result.json
+程序/工具/official-todo.json

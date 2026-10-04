@@ -432,7 +432,7 @@ if (cmd === "status") {
   const { E: FE, out: FO } = merge("frontend");
   // supplement/dom.json: 只在页面显示层整句替换的文字(服务器下发、或容易与代码里同名字符串冲突的), 不碰前端代码
   const esc = (t) => t.replace(/[.*+?^$()|[\]\\\/{}]/g, "\\$&");
-  const domSrc = fs.readdirSync(SUPP).filter((f) => /^dom\d*\.json$/.test(f)).sort().flatMap((f) => load(path.join(SUPP, f)));
+  const domSrc = fs.readdirSync(SUPP).filter((f) => /^dom[\w-]*\.json$/.test(f)).sort().flatMap((f) => load(path.join(SUPP, f)));
   // dynamic 词表(模型选择器说明等)汉化包只装了英文原文; 用 statsig 词表(同 ID)或前端词库(同原文)里的中文补上
   {
     const dyn = load(path.join(R, "ion-dist", "i18n", "dynamic", "en-US.json"));
