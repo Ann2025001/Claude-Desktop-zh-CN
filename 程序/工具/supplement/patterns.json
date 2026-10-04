@@ -6,9 +6,9 @@
  ["^([\\d.,]+)% left$","剩余 $1%","left",1000],
  ["^(\\$[\\d.,]+) of (\\$[\\d.,]+) left$","剩余 $1（共 $2）","left",1000],
  ["^(\\$[\\d.,]+) of (\\$[\\d.,]+) used$","已用 $1（共 $2）","used",1000],
- ["^Expires in (.+)$","$1 后到期","expires",1000],
- ["^Expires (.+)$","$1 到期","expires",999],
- ["^Expired (.+)$","已于 $1 到期","expired",1000],
+ ["^Expires in (.{1,40})$","$1 后到期","expires",1000],
+ ["^Expires (.{1,40})$","$1 到期","expires",999],
+ ["^Expired (.{1,40})$","已于 $1 到期","expired",1000],
  ["^Renews (.+)$","$1 续订","renews",1000],
  ["^Usage: (.+)$","用量：$1","usage",1000],
  ["^Last updated (.+)$","最后更新于 $1","updated",1000],
@@ -39,5 +39,9 @@
  ["^Context ([\\d.,]+\\s?[kKM]?) / ([\\d.,]+\\s?[kKM]?)$","上下文 $1 / $2","context",1000],
  ["^(.{1,40}?)['’]s safeguards flagged this message\\. Our intentionally broad safeguards allow us to deliver more capabilities faster, but can sometimes flag legitimate cybersecurity work\\. Apply to the Cyber Verification Program to reduce these interruptions\\.$","$1 的安全防护标记了这条消息。我们有意采用较宽泛的安全防护，以便更快地推出更多能力，但有时也会误标正当的网络安全工作。申请加入网络安全验证计划可减少此类中断。","safeguards",1000],
  ["^(.{1,40}?)['’]s safeguards flagged this message\\. Our intentionally broad safeguards allow us to deliver more capabilities faster, but can sometimes flag legitimate cybersecurity work\\.$","$1 的安全防护标记了这条消息。我们有意采用较宽泛的安全防护，以便更快地推出更多能力，但有时也会误标正当的网络安全工作。","safeguards",999],
- ["^No folder, (.+)$","无文件夹，$1","folder",1000]
+ ["^No folder, (.+)$","无文件夹，$1","folder",1000],
+ ["^Expires (.{1,40}?)\\. It applies automatically to\\s*$","$1 到期。自动用于","expires",1100],
+ ["^\\. Not eligible for Projects and Routines\\.$","。不适用于项目和例行程序。","eligible",1000],
+ ["^(\\$[\\d.,]+) credits for cloud sessions available$","有 $1 云端会话额度可用","credits",1000],
+ ["^Context ([\\d.,]+\\s?[kKM]?) / ([\\d.,]+\\s?[kKM]?) \\(([\\d.,]+%)\\)$","上下文 $1 / $2（$3）","context",1000]
 ]

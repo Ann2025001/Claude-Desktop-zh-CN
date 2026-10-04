@@ -232,5 +232,11 @@
  ["Resize console messages", "调整控制台消息区大小"],
  ["Rendered HTML content", "渲染后的 HTML 内容"],
  ["Console Messages", "控制台消息"],
- ["Korean BRN", "韩国营业执照号（BRN）"]
+ ["Korean BRN", "韩国营业执照号（BRN）"],
+ ["You’ll", "你"],
+ ["You'll", "你"],
+ ["need a GitHub repository", "需要一个 GitHub 仓库"],
+ ["to start the cloud session.", "才能启动云端会话。"],
+ ["You’ll need a GitHub repository to start the cloud session.", "你需要一个 GitHub 仓库才能启动云端会话。"],
+ ["You'll need a GitHub repository to start the cloud session.", "你需要一个 GitHub 仓库才能启动云端会话。"]
 ]
