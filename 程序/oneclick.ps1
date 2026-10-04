@@ -60,6 +60,8 @@ $runtimeLit = $RuntimeFile | ConvertTo-Json -Compress
 $hasAuthorDom = $asarText.Contains("/*__claudeZhOnlineLocaleMain*/")
 $hasSupplement = $asarText.Contains("/*__claudeZhSupplementMain*/")
 $oursFull = $hasAuthorDom -and -not $hasSupplement -and $asarText.Contains("readFileSync($runtimeLit")
+$notifyLit = (Join-Path $Opt "runtime\notify-zh-CN.json") | ConvertTo-Json -Compress
+$hasNotify = $asarText.Contains("/*__claudeZhNotify*/") -and $asarText.Contains("readFileSync($notifyLit")
 $zhInstalled = Test-Path -LiteralPath (Join-Path $res "ion-dist\i18n\zh-CN.json")
 $asarText = $null
 
@@ -81,8 +83,8 @@ elseif ($oursFull) {
     if ($NoInstall) { Write-Host "（测试模式：跳过写入）"; return }
     $same = (Get-FileHash (Join-Path $Pack "resources\frontend-zh-CN.json")).Hash -eq (Get-FileHash (Join-Path $res "ion-dist\i18n\zh-CN.json")).Hash -and
             (Get-FileHash (Join-Path $Pack "resources\desktop-zh-CN.json")).Hash -eq (Get-FileHash (Join-Path $res "zh-CN.json")).Hash
-    if (-not $same) {
-        Write-Host "词库文件也有更新，需要管理员授权写入..." -ForegroundColor Cyan
+    if (-not $same -or -not $hasNotify) {
+        Write-Host "词库文件或系统通知补丁需要更新，需要管理员授权写入..." -ForegroundColor Cyan
         [void](Start-Elevated (Join-Path $Prog "supplement.ps1") @('-PackDir', "`"$Pack`"", '-RuntimeFile', "`"$RuntimeFile`"", '-CatalogsOnly'))
     }
     Write-Host "完成。请完全退出 Claude（托盘图标右键 → 退出）再打开。" -ForegroundColor Green

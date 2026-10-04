@@ -512,4 +512,15 @@ if (cmd === "status") {
   const dir = path.resolve(process.argv[3] || DEFAULT_PACK);
   execSync(`node "${__filename}" pack "${dir}"`, { stdio: "inherit" });
   execSync(`powershell -NoProfile -ExecutionPolicy Bypass -File "${path.join(HERE, "make-runtime.ps1")}" -PackDir "${path.resolve(dir, "..")}" -RuntimeDir "${RUNTIME_DIR}" -ResourcesPath "${R}"`, { stdio: "inherit" });
+  // 系统通知的正文由网页交给主进程弹出, 不经过页面翻译; 主进程补丁按这张"英文 → 中文"表替换(只含不带变量的整句)
+  const nmap = {};
+  for (const [en, zhFile] of [[path.join(R, "ion-dist", "i18n", "en-US.json"), "frontend-zh-CN.json"], [path.join(HERE, "pack-original", "desktop-en-US.json"), "desktop-zh-CN.json"]]) {
+    const E = load(en), Z = load(path.join(dir, zhFile));
+    for (const k of Object.keys(E)) {
+      const a = E[k], b = Z[k];
+      if (b && b !== a && a.length <= 300 && !/[{}<]/.test(a) && !/[{}<]/.test(b) && !(a in nmap)) nmap[a] = b;
+    }
+  }
+  fs.writeFileSync(path.join(RUNTIME_DIR, "notify-zh-CN.json"), JSON.stringify(nmap));
+  console.log(`已写入通知译文表: ${Object.keys(nmap).length} 条`);
 }

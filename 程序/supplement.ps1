@@ -3,7 +3,7 @@
 param(
     [Parameter(Mandatory = $true)][string]$PackDir,     # 程序\汉化包
     [Parameter(Mandatory = $true)][string]$RuntimeFile, # 外置词典文件
-    [switch]$CatalogsOnly,                              # 只更新词库文件（本优化版已注入时）
+    [switch]$CatalogsOnly,                              # 本优化版已注入网页翻译时：只更新词库和通知补丁
     [switch]$DryRun,                                    # 只检查，不写入
     [switch]$NoPause
 )
@@ -45,10 +45,8 @@ try {
         Copy-Item -LiteralPath $c[0] -Destination $c[1] -Force
         Write-Host "  已写入 $($c[1])" -ForegroundColor Green
     }
-    if ($CatalogsOnly) { Write-Host "完成。" -ForegroundColor Green; return }
-
     # 3. 前端代码里写死的英文：用汉化包自己的替换函数，按补充后的词表再跑一遍（已替换过的不会重复替换）
-    if (-not $DryRun) {
+    if (-not $DryRun -and -not $CatalogsOnly) {
         Write-Host "[前端] 补充写死在前端代码里的文字..." -ForegroundColor Cyan
         Patch-HardcodedFrontendStrings $res $Language
     }
@@ -62,6 +60,7 @@ try {
     $entry = Get-AsarFileEntry $parsed["Header"] $target
     $off = [int64](8 + $parsed["HeaderSize"] + [int64]$entry.offset)
     $text = [System.Text.Encoding]::UTF8.GetString($data, [int]$off, [int]$entry.size)
+    $origText = $text
 
     $authorMarker = "/*$OnlineLocaleMainMarker*/"
     $mi = $text.IndexOf($authorMarker, [System.StringComparison]::Ordinal)
@@ -70,6 +69,7 @@ try {
         Write-Host "完成。请完全退出 Claude 再打开。" -ForegroundColor Green
         return
     }
+    if (-not $CatalogsOnly) {
     # 去掉旧的补充代码（再次运行时）
     $si = $text.IndexOf($SupplementStart, [System.StringComparison]::Ordinal)
     if ($si -ge 0) {
@@ -87,18 +87,40 @@ try {
     $pathLit = $RuntimeFile | ConvertTo-Json -Compress
     $code = $SupplementStart + $recv + '.webContents.on("dom-ready",()=>{' + $recv + '.webContents.executeJavaScript((()=>{try{return require("fs").readFileSync(' + $pathLit + ',"utf8")}catch(e){return ""}})()).catch(()=>{})})' + $term + $SupplementMarker
     $insertAt = $mi + $authorMarker.Length
-    $patched = $text.Substring(0, $insertAt) + $code + $text.Substring($insertAt)
+    $text = $text.Substring(0, $insertAt) + $code + $text.Substring($insertAt)
     Write-Host "  将在作者的翻译代码之后加入补充代码（接收对象 $recv，读取 $RuntimeFile）"
+    }
+
+    # 5. 系统通知：网页把通知正文交给主进程弹出，不经过页面翻译。在主进程弹通知处按外置的通知译文表换成中文（查不到用原文）
+    Write-Host "[通知] 检查系统通知的正文..." -ForegroundColor Cyan
+    $NotifyStart = "/*__claudeZhNotify*/"; $NotifyEnd = "/*__claudeZhNotifyEnd*/"
+    $text = [regex]::Replace($text, [regex]::Escape($NotifyStart) + '.*?,([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)?)\)' + [regex]::Escape($NotifyEnd), '$1')   # 先还原旧补丁
+    $mapLit = (Join-Path (Split-Path -Parent $RuntimeFile) "notify-zh-CN.json") | ConvertTo-Json -Compress
+    $wrap = { param($v) $NotifyStart + '((m,s)=>m&&typeof s=="string"&&m[s]||s)(globalThis.__claudeZhNotifyMap??=(()=>{try{return JSON.parse(require("fs").readFileSync(' + $mapLit + ',"utf8"))}catch(e){return null}})(),' + $v + ')' + $NotifyEnd }
+    $notifyTargets = @(
+        @('showNotification:\((?<a>[\w$]+),(?<b>[\w$]+),(?<c>[\w$]+),(?<d>[\w$]+),(?<e>[\w$]+),(?<f>[\w$]+)\)=>\{(?<o>[\w$]+)\.showNotification\(\k<a>,(?<body>\k<b>),', 'body', '网页发来的通知'),
+        @('(?<o>[\w$]+)\.service\.showNotification\((?<t>[\w$]+)\.title,(?<b>\k<t>\.body),', 'b', '带按钮的通知')
+    )
+    foreach ($nt in $notifyTargets) {
+        $ms = [regex]::Matches($text, $nt[0])
+        if ($ms.Count -ne 1) { Write-Host "  $($nt[2])：找到 $($ms.Count) 处（预期 1 处），为安全起见跳过" -ForegroundColor DarkYellow; continue }
+        $m = $ms[0]; $g = $m.Groups[$nt[1]]
+        $text = $text.Substring(0, $g.Index) + (& $wrap $g.Value) + $text.Substring($g.Index + $g.Length)
+        Write-Host "  $($nt[2])：正文改为查通知译文表"
+    }
 
     if ($DryRun) {
         $tmp = Join-Path $env:TEMP "claude-zh-main-check.js"
-        [System.IO.File]::WriteAllText($tmp, $patched, (New-Object System.Text.UTF8Encoding $false))
+        [System.IO.File]::WriteAllText($tmp, $text, (New-Object System.Text.UTF8Encoding $false))
         Write-Host "  （检查模式）补充后的主程序代码已写到 $tmp"
         return
     }
-    $changed = Replace-AsarFileContent $res $target ([System.Text.Encoding]::UTF8.GetBytes($patched))
-    if ($changed) { Write-Host "  已加入补充代码，并同步了 Claude.exe 的校验值" -ForegroundColor Green }
-    else { Write-Host "  补充代码已是最新" -ForegroundColor Green }
+    if ($text -ceq $origText) { Write-Host "  主程序补丁已是最新" -ForegroundColor Green }
+    else {
+        $changed = Replace-AsarFileContent $res $target ([System.Text.Encoding]::UTF8.GetBytes($text))
+        if ($changed) { Write-Host "  已写入主程序补丁，并同步了 Claude.exe 的校验值" -ForegroundColor Green }
+        else { Write-Host "  主程序补丁已是最新" -ForegroundColor Green }
+    }
     Write-Host ""
     Write-Host "完成。请完全退出 Claude（托盘图标右键 → 退出）再打开。" -ForegroundColor Green
 }
