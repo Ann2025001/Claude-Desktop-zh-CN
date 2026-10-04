@@ -519,7 +519,16 @@ if (cmd === "status") {
   // 只更新外置词典(不用重装): 先 pack, 再用汉化包安装脚本里的同一套函数生成翻译脚本, 写到 runtime\
   const dir = path.resolve(process.argv[3] || DEFAULT_PACK);
   execSync(`node "${__filename}" pack "${dir}"`, { stdio: "inherit" });
+  // 保险：新生成的外置词典语法不通过就恢复上一份可用的，避免重启 Claude 后整个汉化失效
+  const rtFile = path.join(RUNTIME_DIR, "dom-zh-CN.js"), rtBak = rtFile + ".last-good";
+  if (fs.existsSync(rtFile)) { try { new (require("vm").Script)(fs.readFileSync(rtFile, "utf8")); fs.copyFileSync(rtFile, rtBak); } catch {} }
   execSync(`powershell -NoProfile -ExecutionPolicy Bypass -File "${path.join(HERE, "make-runtime.ps1")}" -PackDir "${path.resolve(dir, "..")}" -RuntimeDir "${RUNTIME_DIR}" -ResourcesPath "${R}"`, { stdio: "inherit" });
+  try { new (require("vm").Script)(fs.readFileSync(rtFile, "utf8")); }
+  catch (e) {
+    if (fs.existsSync(rtBak)) fs.copyFileSync(rtBak, rtFile);
+    console.error(`[错误] 新生成的外置词典有语法错误（${e.message}），已恢复上一份可用的词典。`);
+    process.exit(1);
+  }
   // 系统通知的正文由网页交给主进程弹出, 不经过页面翻译; 主进程补丁按这张"英文 → 中文"表替换(只含不带变量的整句)
   const nmap = {};
   for (const [en, zhFile] of [[path.join(R, "ion-dist", "i18n", "en-US.json"), "frontend-zh-CN.json"], [path.join(HERE, "pack-original", "desktop-en-US.json"), "desktop-zh-CN.json"]]) {
