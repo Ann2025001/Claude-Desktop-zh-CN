@@ -2,6 +2,12 @@
 param([switch]$NoInstall)   # 测试用：只检测和生成，不写入 Claude
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+# 出错时只显示一句中文原因，不显示 PowerShell 的英文调用栈
+trap {
+    $m = $_.Exception.Message
+    if ($m -match "canceled|取消") { $m = "管理员授权被取消，Claude 没有被改动。需要汉化时重新双击，在弹出的窗口里点「是」。" }
+    Write-Host ""; Write-Host "未完成：$m" -ForegroundColor Red; exit 1
+}
 
 $Prog = $PSScriptRoot                                   # 优化版\程序
 $Opt = Split-Path -Parent $Prog                         # 优化版
@@ -18,7 +24,7 @@ function Get-PackVersion([string]$dir) {
     try { return [version]([string]$j.release -replace '[^0-9.]', '') } catch { return $null }
 }
 function Invoke-Build([string]$authorDir) {
-    if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw "没有找到 Node.js，无法生成词典。" }
+    if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw "没有找到 Node.js，无法生成词典。请先到 https://nodejs.org 下载安装 LTS 版，装好后再双击一键汉化。" }
     $env:CLAUDE_ZH_AUTHOR_DIR = $authorDir
     try { & node (Join-Path $Tool "build.js") runtime (Join-Path $Pack "resources") | Out-Host }
     finally { Remove-Item Env:\CLAUDE_ZH_AUTHOR_DIR -ErrorAction SilentlyContinue }
