@@ -9,10 +9,12 @@ node build.js status     # 覆盖率
 node build.js check      # 校验补译（ICU 参数、标签）
 node build.js pack       # 合并词典，写入 ../汉化包/resources，并给作者安装脚本打补丁
 node build.js runtime    # pack + 重新生成外置词典 <仓库>/runtime/dom-zh-CN.js（重启 Claude 生效）
+node test-golden.js      # 回归测试（带断言，修过的问题和"必须保持原文"的句子；失败则退出码非 0）
 node test-rules.js       # 页面规则抽样测试
 node test-menus.js       # 菜单 / 托盘文字覆盖检查
 node probe.js "文字"     # 在 Claude 程序里查某段文字的上下文（只读）
 node slash-commands.js   # 从本机 Claude Code 提取斜杠命令说明（输出不入库）
+node release.js v1.0.2 说明.md [标题]  # 发布新版本：检查已推送 → 回归测试 → 打标签 → 打包 → 上传（需 gh 已登录）
 ```
 
 ## 翻译从哪里来（优先级从高到低）
@@ -35,10 +37,13 @@ node slash-commands.js   # 从本机 Claude Code 提取斜杠命令说明（输�
 - 加入变量句规则和匹配函数（`pattern-engine.js`）
 - 菜单 / 托盘：主程序语言会被在线页面同步回 en-US，安装时用中文版覆盖 `en-US.json`（原版由汉化包备份，卸载时还原）
 - 外置词典：安装时把翻译脚本另存到 `runtime/`，主程序每次页面加载先读它，读不到用内置的一份
+- 保护范围：补上代码页回复正文、用户消息气泡、悬浮的上一条消息、任务清单、章节目录、表格等对话区域
+- 斜杠命令保护只拦带斜杠或全小写的命令名，Read-only、Built-in 等首字母大写的界面词照常翻译
+- 性能：整页遍历遇到受保护区域整棵跳过（长会话每次处理耗时约减半，结果不变）
 
 ## 查遗补缺的流程（不靠截图）
 
-1. **漏翻收集**：翻译脚本把查不到译文的英文界面文字记下来，主进程每分钟写入 `runtime/missing-zh-CN.json`（只在本机；用户消息、Claude 回复、输入框不经过翻译脚本，不会被收集）
+1. **漏翻收集**：翻译脚本把查不到译文的英文界面文字记下来，主进程每分钟写入 `runtime/missing-zh-CN.json`（只在本机；受保护的对话区域和输入框不经过翻译脚本，不会被收集）
 2. **覆盖率检查**：`node coverage.js` 在模拟页面里运行完整外置词典，逐条检查本地前端代码、网页缓存（含 zstd 压缩）、动态词表和漏翻收集里的英文，输出还翻不了的 `coverage-todo.json`；`node coverage.js --icu` 检查词库里带变量的句子代入示例值后能否翻译
 3. **批量翻译**：把 `coverage-todo.json` 翻译后放进 `supplement/dom-*.json`（如 `dom-scan.json`），`node build.js runtime`，重启 Claude 生效
 
