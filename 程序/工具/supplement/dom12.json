@@ -1,0 +1,12 @@
+[
+ ["Resets at","重置于 "],
+ ["Plan usage resets at","套餐用量重置于 "],
+ ["Use your limit reset","使用限额重置机会"],
+ ["About full resets","关于完全重置"],
+ ["Permission request: run a workflow","权限请求：运行工作流"],
+ ["Background command completed","后台命令已完成"],
+ ["Background workflow completed","后台工作流已完成"],
+ ["You've hit your weekly limit","已达到每周限额"],
+ ["You've hit your session limit","已达到会话限额"],
+ ["Resize Chat and Background tasks","调整对话与后台任务面板的大小"]
+]
