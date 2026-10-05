@@ -40,6 +40,8 @@ const cases = [
   ["Usage limit reached · Resets 3:40 AM ·", "已达到用量限额 · 03:40重置 ·"],
   ["limits shared with Claude Code", "与 Claude Code 共享限额"],
   ["Don't do that", undefined],
+  // 带星期的日期
+  ["Resets Mon, Oct 12, 2:00 PM", "10月12日 周一 14:00 重置"],
   // 术语与错译修正
   ["Weekdays", "工作日"],
   ["Force-kill", "强制结束"],
