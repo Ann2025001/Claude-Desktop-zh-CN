@@ -483,7 +483,11 @@ if (cmd === "status") {
   const rDefNew = rDef.replace('return t.replace("$1",m[1])', 'return t.replace(/\\$(\\d)/g,(_,i)=>m[i]||"")');
   swap(ps.includes(rDef) ? rDef : rDefNew, "const V=__PATTERNS__;\n" + engine + "\n" + rFixed);
   // 保护范围补上代码页的对话正文（Claude 回复、文件预览正文、排队中的消息），这些区域的文字不经过翻译规则，也不会被漏翻收集
-  swap(`[data-testid="conway-output-cell"]';`, `[data-testid="conway-output-cell"],.epitaxy-markdown,.epitaxy-file-prose,[data-testid="coach-queued-message"],[data-testid="user-message-edit"],[data-testid="thread-step-text"],[data-testid="result-list"],[data-testid="result-list-box"],.epitaxy-bubble-prose,.epitaxy-sticky-prompt-bubble,.epitaxy-markdown-inherit-color,.epitaxy-toc';`); // 后四项：代码页用户消息气泡、顶部悬浮的上一条消息、任务清单条目、会话章节目录
+  swap(`[data-testid="conway-output-cell"]';`, `[data-testid="conway-output-cell"],.epitaxy-markdown,.epitaxy-file-prose,[data-testid="coach-queued-message"],[data-testid="user-message-edit"],[data-testid="thread-step-text"],[data-testid="result-list"],[data-testid="result-list-box"],.epitaxy-bubble-prose,.epitaxy-sticky-prompt-bubble,.epitaxy-markdown-inherit-color,.epitaxy-toc,.epitaxy-table-scroll';`); // 后五项：代码页用户消息气泡、顶部悬浮的上一条消息、任务清单条目、会话章节目录、回复里的表格（含展开弹层）
+  // 斜杠命令保护原本不区分大小写，把 Read-only、Built-in、Sign-in 等首字母大写的界面词（以及紧挨排列的按钮组）都当成命令名跳过。
+  // 改为只拦带斜杠的命令名或全小写的技能名（如 /code-review、daily-code-review）；作者若改了这一行就跳过，不影响其他部分
+  { const slOld = String.raw`const SL=/^\/?[a-z][a-z0-9_]*(?:-[a-z0-9_]+)+(?:\s*(?:Custom command|Slash command))?$/i;`;
+    if (ps.includes(slOld)) swap(slOld, String.raw`const SL=/^(?:\/[A-Za-z][\w]*(?:-\w+)+|[a-z][a-z0-9_]*(?:-[a-z0-9_]+)+)(?:\s*(?:[Cc]ustom command|[Ss]lash command))?$/;`); }
   // 汉化包用的 [ordered]@{} 不区分大小写, "This computer" 会被 "this computer" 覆盖, 而页面匹配区分大小写, 导致数百条常用词失效
   if (ps.includes("    $mapping = [ordered]@{}")) swap("    $mapping = [ordered]@{}", "    $mapping = New-Object System.Collections.Specialized.OrderedDictionary ([System.StringComparer]::Ordinal)");   // 作者新版已修正则跳过
   const instLine = 'Write-Host "  installed resources/$Lang.json" -ForegroundColor Green';

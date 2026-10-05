@@ -12,7 +12,8 @@ const VP=n=>{if(n&&n.includes("$2年"))return n.replace(/\$2年/g,"");if(n&&/[�
 if(best===void 0&&/\s/.test(n)&&n.length<=80)best=ML(n);
 if(best===void 0&&/, | · /.test(n)){const lead=/^(?:,|·) /.test(n)?(n[0]===","?"，":" · "):"",body=lead?n.slice(2):n,sep=body.includes(" · ")||lead===" · "?" · ":"，",ps=body.split(/ · |, (?:and )?/),cap=s=>s.charAt(0).toUpperCase()+s.slice(1),tr=[];for(const p of ps){const c=cap(p.trim()),t=M[p]||M[c]||(p!==n&&c!==n?VP(c):void 0);if(!t){tr.length=0;break}tr.push(t)}if(tr.length===ps.length&&(tr.length>1||lead&&tr.length))best=lead+tr.join(sep)}
 // 代码把几句已翻译的话用空格拼成一段（如限额卡片 "Turn on usage credits…limit. Your weekly limit resets at 2:00 PM."）：按句号拆开，每句都能翻译才拼回
-if(best===void 0&&n.length<=400&&/[.!?] +[A-Z]/.test(n)){const ps=n.split(/(?<=[.!?]) +(?=[A-Z])/),tr=[];for(const p of ps){const t=M[p]||(p!==n?VP(p):void 0);if(!t||t===p){tr.length=0;break}tr.push(t)}if(tr.length>1&&tr.length===ps.length)best=tr.join("")}
+// 从左往右优先取最长的连续几句整体翻译（词典里可能存的是其中两句合起来的整句）（各段结果有缓存，不会重复计算）
+if(best===void 0&&n.length<=400&&/[.!?] +[A-Z]/.test(n)){const ps=n.split(/(?<=[.!?]) +(?=[A-Z])/),tr=[];let i=0;while(i<ps.length){let ok=0;for(let j=ps.length;j>i;j--){const seg=ps.slice(i,j).join(" ");if(seg===n)continue;const t=M[seg]||VP(seg);if(t&&t!==seg){tr.push(t);i=j;ok=1;break}}if(!ok){tr.length=0;break}}if(tr.length)best=tr.join("")}
 if(VC.size>5000)VC.clear();VC.set(n,best);return best};
 const SW=[[/^(Pay|支付)$/,/^(now|现在)$/,"立即支付 "]];const SF=()=>{try{document.querySelectorAll("b").forEach(b=>{const p=b.previousSibling,q=b.nextSibling;if(!p||!q||p.nodeType!==3||q.nodeType!==3)return;const a=p.nodeValue.trim(),c=q.nodeValue.trim();for(const [x,y,t] of SW)if(x.test(a)&&y.test(c)){p.nodeValue=t;q.nodeValue=""}});ZPF();ZSR();ZRT();ZSEG()}catch{}};
 // 分段按钮（如自动化任务日程 One-time/Manual/Hourly…）紧挨着排列，父元素文字拼成 "One-timeManual…" 像斜杠命令名，被作者的命令保护跳过。

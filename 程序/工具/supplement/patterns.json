@@ -109,5 +109,16 @@
  ["^(\\d+) background workflows? completed$","$1 个后台工作流已完成","background",1000],
  ["^You[’']ve hit your weekly limit · resets (.{1,40}?)$","已达到每周限额 · $1 重置","weekly",1000],
  ["^You[’']ve hit your session limit · resets (.{1,40}?)$","已达到会话限额 · $1 重置","session",1000],
- ["^This session is cached for (.{1,40}?)\\. Switching to (.{1,40}?) means Claude re-reads the whole session on your next message, which uses more of your limit\\.$","此会话已按 $1 缓存。切换到 $2 后，Claude 会在你发送下一条消息时重新读取整个会话，会消耗更多限额。","session",1000]
+ ["^This session is cached for (.{1,40}?)\\. Switching to (.{1,40}?) means Claude re-reads the whole session on your next message, which uses more of your limit\\.$","此会话已按 $1 缓存。切换到 $2 后，Claude 会在你发送下一条消息时重新读取整个会话，会消耗更多限额。","session",1000],
+ ["^Saved (\\d+) memor(?:y|ies)$","保存了 $1 条记忆","saved",1000],
+ ["^Recalled (\\d+) memor(?:y|ies)$","调取了 $1 条记忆","recalled",1000],
+ ["^Zoom image: (.{1,80})$","放大图片：$1","zoom",1000],
+ ["^(.{1,30}?) is answering instead, or you can edit and retry with (.{1,30}?)\\.$","已改由 $1 回答，你也可以编辑后用 $2 重试。","answering",1000],
+ ["^Runs at: (.{1,60})$","运行时间：$1","runs",1000],
+ ["^Once — (.{1,60})$","一次 — $1","once",1000],
+ ["^New session in (.{1,60})$","在“$1”中新建会话","session",1000],
+ ["^(\\d+) commits? to push$","$1 个提交待推送","push",1000],
+ ["^(\\d+) behind its base branch$","落后基础分支 $1 个提交","behind",1000],
+ ["^(\\d+) behind ([\\w./-]{1,60})$","落后 $2 $1 个提交","behind",999],
+ ["^((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{1,2}(?:, \\d{4})?) at ~?(\\d{1,2}:\\d{2}\\s?[AP]M)$","$1 $2","*",1000]
 ]
