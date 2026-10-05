@@ -474,6 +474,20 @@ if (cmd === "status") {
     }
     console.log(`带格式标签的整句: ${n} 条`);
   }
+  // 原文用反引号标出的代码词（如更新日志里的 `LocalAppData`）在页面上显示成代码块，整句文字里没有反引号：
+  // 为带反引号的整句（补充整句表 + 写死文字词表）再加一份去掉反引号的版本
+  {
+    const BT = /`([^`\n]+)`/g, seenBt = new Set(domSrc.map(([e]) => e));
+    const pool = domSrc.slice().concat(load(path.join(dir, "frontend-hardcoded-zh-CN.json")));
+    let n = 0;
+    for (const [e, z] of pool) {
+      if (typeof e !== "string" || typeof z !== "string" || !e.includes("`")) continue;
+      const se = e.replace(BT, "$1"), sz = z.replace(BT, "$1");
+      if (se === e || seenBt.has(se) || /\n/.test(se)) continue;
+      seenBt.add(se); domSrc.push([se, sz]); n++;
+    }
+    console.log(`去掉反引号的整句: ${n} 条`);
+  }
   // 小标题常用 CSS 全大写显示, 页面里的文字可能就是大写形式, 一并加上
   // 服务器下发的文字大小写常和词库不一致(如 "Peak Hour"), 页面层规则一律不区分大小写
   const dom = domSrc.map(([en, zh]) => {

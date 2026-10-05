@@ -1,0 +1,12 @@
+[
+ ["Checking computer status","正在检查电脑状态"],
+ ["Checked computer status","已检查电脑状态"],
+ ["Requesting access to a folder on your computer","正在请求访问你电脑上的一个文件夹"],
+ ["Claude wants to use your computer","Claude 想要使用你的电脑"],
+ ["Claude wants to use:","Claude 想要使用："],
+ ["Stopping preview","正在停止预览"],
+ ["Helpful","有帮助"],
+ ["Not helpful","没有帮助"],
+ ["Send messages, create canvases, and fetch Slack data","发送消息、创建画布并获取 Slack 数据"],
+ ["Slack, Gmail, Drive integration","Slack、Gmail、Drive 集成"]
+]

@@ -31,6 +31,9 @@ const cases = [
   // 带加粗标签的句子（如切换强度/模型的确认框），换了档位名也要能翻译
   ["Your next response will be slower and use more tokens. This task is cached for the current effort level. Switching to 中 means the full history gets re-read on your next message.", "你的下一次回复会更慢，并消耗更多令牌。此任务已为当前推理强度缓存。切换到 中 意味着你的下一条消息会重新读取完整历史。"],
   ["Your next response will be slower and use more tokens. This task is cached for the current model. Switching to Opus 5.5 means the full history gets re-read on your next message.", "你的下一次回复会更慢，并消耗更多令牌。此任务已为当前模型缓存。切换到 Opus 5.5 意味着你的下一条消息会重新读取完整历史。"],
+  // 只差句末标点
+  ["Memory updated.", "记忆已更新。"],
+  ["Fine", "一般"],
   // 术语与错译修正
   ["Weekdays", "工作日"],
   ["Force-kill", "强制结束"],

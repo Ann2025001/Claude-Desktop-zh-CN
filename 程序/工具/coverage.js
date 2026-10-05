@@ -37,14 +37,21 @@ function makeTranslator() {
 
 // 2. 候选文字
 const EOF = Buffer.from([0xd8, 0x41, 0x0d, 0x97, 0x45, 0x6f, 0xfa, 0xf4]);
-const lit = /(?:children|label|title|description|placeholder|tooltip|subtitle|heading|"aria-label"|ariaLabel|text|message|header|body|cta|ctaText|buttonText|emptyText|helperText|caption|hint|subheading|tagline|summary):"((?:[^"\\]|\\.){3,300})"/g;
-const looksUi = (s) => /^[A-Z][a-z]/.test(s) && !/[{}<>=;\\]|https?:|\.(js|ts|tsx|json|png|svg)\b|^[A-Z][a-z]+[A-Z]/.test(s) && (/ /.test(s) || /^[A-Z][a-z]{2,}$/.test(s));
+const lit = /(?:children|label|title|description|placeholder|tooltip|subtitle|heading|"aria-label"|ariaLabel|text|message|header|body|cta|ctaText|buttonText|emptyText|helperText|caption|hint|subheading|tagline|summary):"((?:[^"\\]|\\.){3,1000})"/g;
+// 句中含双引号的文字，压缩后的代码会改用单引号包住（如更新日志 text:'…"constructor"…'），同样要扫
+const lit1 = /(?:children|label|title|description|placeholder|tooltip|subtitle|heading|ariaLabel|text|message|header|body|cta|ctaText|buttonText|emptyText|helperText|caption|hint|subheading|tagline|summary):'((?:[^'\\]|\\.){3,1000})'/g;
+const sq = (c) => JSON.parse('"' + c.replace(/\\'/g, "'").replace(/(^|[^\\])"/g, '$1\\"') + '"');
+// 分号通常说明是代码；但五个词以上、以句号等结尾的完整英文句子（如更新日志"……; the message is now…"）照样当界面文字
+const prose = (s) => s.split(" ").length >= 5 && /[.!?]$/.test(s);
+const looksUi = (s) => /^[A-Z][a-z]/.test(s) && !/[{}<>=\\]|https?:|\.(js|ts|tsx|json|png|svg)\b|^[A-Z][a-z]+[A-Z]/.test(s) && (!s.includes(";") || prose(s)) && (/ /.test(s) || /^[A-Z][a-z]{2,}$/.test(s));
 function* walk(d) { for (const f of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, f.name); if (f.isDirectory()) yield* walk(p); else yield p; } }
 function collect() {
   const out = new Map();
   const add = (s, src) => { if (!out.has(s)) out.set(s, src); };
   const fromJs = (t, src) => {
     for (const m of t.matchAll(lit)) { let s; try { s = JSON.parse('"' + m[1] + '"'); } catch { continue; } if (looksUi(s)) add(s, src); }
+    for (const m of t.matchAll(lit1)) { let s; try { s = sq(m[1]); } catch { continue; } if (looksUi(s)) add(s, src); }
+    for (const m of t.matchAll(/defaultMessage:'((?:[^'\\]|\\.){2,300})'/g)) { let s; try { s = sq(m[1]); } catch { continue; } if (!/[{}<]/.test(s) && /[a-z]{2}/i.test(s)) add(s, src); }
     // 带编号的界面文字（不含变量的）：网页版常比桌面版新，会有本机词库里没有的
     for (const m of t.matchAll(/defaultMessage:"((?:[^"\\]|\\.){2,300})"/g)) { let s; try { s = JSON.parse('"' + m[1] + '"'); } catch { continue; } if (!/[{}<]/.test(s) && /[a-z]{2}/i.test(s)) add(s, src); }
   };
