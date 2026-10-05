@@ -34,6 +34,12 @@ const cases = [
   // 只差句末标点
   ["Memory updated.", "记忆已更新。"],
   ["Fine", "一般"],
+  // 直撇号与弯撇号、不同百分比和限额类型、带链接句子的分段
+  ["You've used 90% of your session limit", "你已使用会话限额的 90%"],
+  ["You've used 50% of your Opus limit", "你已使用 Opus 限额的 50%"],
+  ["Usage limit reached · Resets 3:40 AM ·", "已达到用量限额 · 03:40重置 ·"],
+  ["limits shared with Claude Code", "与 Claude Code 共享限额"],
+  ["Don't do that", undefined],
   // 术语与错译修正
   ["Weekdays", "工作日"],
   ["Force-kill", "强制结束"],

@@ -235,9 +235,24 @@ function patterns(E, out) {
   // 只起格式作用的标签（加粗、斜体等）在页面上是同一句里的一个子元素，补充引擎会把整句合起来匹配，所以生成规则时去掉标签、保留内容；
   // 链接等有功能的标签仍然跳过
   const fmt = (s) => (typeof s === "string" ? s.replace(/<\/?(?:bold|b|strong|em|i|italic|mark|highlight|u|small)>/g, "") : s);
+  // 带链接的句子（如 "Usage limit reached · Resets {time} · <link>limits shared with Claude Code</link>"）在页面上被链接切成几段，
+  // 补充引擎按段翻译；这里把链接前、链接文字、链接后各自生成规则（中英文链接数量一致时才切）
+  const items = [];
+  const LS = /<(\w+)>([^<]*)<\/\1>/;
   for (const k of Object.keys(E)) {
     const en = fmt(E[k]), zh = fmt(out[k]);
-    if (!zh || zh === en || !en.includes("{") || /[\n<]/.test(en) || /[\n<]/.test(zh)) continue;
+    items.push([en, zh, false]);
+    if (typeof en !== "string" || typeof zh !== "string" || !LS.test(en)) continue;
+    const se = en.split(LS), sz = zh.split(LS);
+    if (se.length !== sz.length || se.length < 4) continue;
+    for (let i = 0; i < se.length; i++) {
+      if (i % 3 === 1) continue;
+      const a = se[i].trim(), b = sz[i].trim();
+      if (a && b && a !== b && /[A-Za-z]{3}/.test(a) && !/[<\n]/.test(a + b)) items.push([a, b, true]);
+    }
+  }
+  for (const [en, zh, seg] of items) {
+    if (!zh || zh === en || (!seg && !en.includes("{")) || /[\n<]/.test(en) || /[\n<]/.test(zh)) continue;
     let combos = [{}];
     try {
       const seen = {}; renderIcu(en, {}, seen);
