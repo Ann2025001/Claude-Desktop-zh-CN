@@ -487,6 +487,10 @@ if (cmd === "status") {
   // 斜杠命令保护原本不区分大小写，把 Read-only、Built-in、Sign-in 等首字母大写的界面词（以及紧挨排列的按钮组）都当成命令名跳过。
   // 改为只拦带斜杠的命令名或全小写的技能名（如 /code-review、daily-code-review）；作者若改了这一行就跳过，不影响其他部分
   { const slOld = String.raw`const SL=/^\/?[a-z][a-z0-9_]*(?:-[a-z0-9_]+)+(?:\s*(?:Custom command|Slash command))?$/i;`;
+    // 性能：作者每次页面变化后遍历整页文字节点，每个都沿祖先链匹配保护选择器、并调用两次翻译。
+    // 改为元素和文字一起遍历：受保护元素（对话正文等，长会话里占绝大多数）整棵跳过；其余文字节点判断与原来完全相同
+    const twOld = `const w=document.createTreeWalker(b,NodeFilter.SHOW_TEXT,{acceptNode(n){const p=n.parentElement;if(!p||X.has(p.tagName)||p.closest('[contenteditable],'+C)||Q(n)||K(n)||!R(n.nodeValue))return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}});`;
+    if (ps.includes(twOld)) swap(twOld, `const XP='[contenteditable],'+C+','+P;const w=document.createTreeWalker(b,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT,{acceptNode(n){if(n.nodeType===1)return X.has(n.tagName)||n.matches(XP)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_SKIP;const p=n.parentElement;if(!p||K(n)||!R(n.nodeValue))return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}});`);
     if (ps.includes(slOld)) swap(slOld, String.raw`const SL=/^(?:\/[A-Za-z][\w]*(?:-\w+)+|[a-z][a-z0-9_]*(?:-[a-z0-9_]+)+)(?:\s*(?:[Cc]ustom command|[Ss]lash command))?$/;`); }
   // 汉化包用的 [ordered]@{} 不区分大小写, "This computer" 会被 "this computer" 覆盖, 而页面匹配区分大小写, 导致数百条常用词失效
   if (ps.includes("    $mapping = [ordered]@{}")) swap("    $mapping = [ordered]@{}", "    $mapping = New-Object System.Collections.Specialized.OrderedDictionary ([System.StringComparer]::Ordinal)");   // 作者新版已修正则跳过
