@@ -232,8 +232,11 @@ const NUMVAR = /^(count|total|page|pages|start|end|number|num|n|shown|input|outp
 function patterns(E, out) {
   const rules = new Map();
   const esc = (t) => t.replace(/[.*+?^$()|[\]\\\/]/g, "\\$&");
+  // 只起格式作用的标签（加粗、斜体等）在页面上是同一句里的一个子元素，补充引擎会把整句合起来匹配，所以生成规则时去掉标签、保留内容；
+  // 链接等有功能的标签仍然跳过
+  const fmt = (s) => (typeof s === "string" ? s.replace(/<\/?(?:bold|b|strong|em|i|italic|mark|highlight|u|small)>/g, "") : s);
   for (const k of Object.keys(E)) {
-    const en = E[k], zh = out[k];
+    const en = fmt(E[k]), zh = fmt(out[k]);
     if (!zh || zh === en || !en.includes("{") || /[\n<]/.test(en) || /[\n<]/.test(zh)) continue;
     let combos = [{}];
     try {
@@ -456,6 +459,20 @@ if (cmd === "status") {
       if (zh && zh !== en && !/[{}\n]/.test(en)) { domSrc.push([en, normalize(zh)]); n++; }
     }
     console.log(`dynamic 词表: ${n}/${Object.keys(dyn).length} 条有中文`);
+  }
+  // 不带变量、只带加粗等格式标签的整句：页面上被拆成"文字 + 加粗 + 文字"，补充引擎会合成整句再匹配，这里去掉标签后加入整句表
+  {
+    const FT = /<\/?(?:bold|b|strong|em|i|italic|mark|highlight|u|small)>/g;
+    let n = 0;
+    for (const k of Object.keys(FE)) {
+      const e = FE[k], z = FO[k];
+      if (!z || z === e || e.includes("{") || !FT.test(e)) continue;
+      FT.lastIndex = 0;
+      const se = e.replace(FT, ""), sz = z.replace(FT, "");
+      if (/[<\n]/.test(se) || /[<\n]/.test(sz)) continue;
+      domSrc.push([se, normalize(sz)]); n++;
+    }
+    console.log(`带格式标签的整句: ${n} 条`);
   }
   // 小标题常用 CSS 全大写显示, 页面里的文字可能就是大写形式, 一并加上
   // 服务器下发的文字大小写常和词库不一致(如 "Peak Hour"), 页面层规则一律不区分大小写
